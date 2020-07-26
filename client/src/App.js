@@ -1,11 +1,12 @@
 import React from 'react';
+import MainPage from "./components/Login";
+import './styles/Login.scss'
 
-import './App.css';
 
 function App() {
   return (
     <div className="App">
-
+        <MainPage />
     </div>
   );
 }
