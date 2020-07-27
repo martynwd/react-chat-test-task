@@ -1,15 +1,25 @@
 import React, {useState} from "react";
-//import socket from "../socket";
+import socket from "../socket";
+import axios from 'axios'
 
-const MainPage = ()=>{
+
+const Login = ({onLogin} )=>{
     const [roomId,setRoomId] = useState('');
     const [userName,setUsername] = useState('');
+    const [isLoading, setLoading] = useState(false);
 
-    const onEnter = ()=>{
+    const onEnter = async ()=>{
         if (!roomId || !userName){
             return console.log('wrong data')
         }
-        console.log(roomId)
+        setLoading(true);
+        const data ={
+            roomId,
+            userName
+        }
+        await axios.post('/rooms', data);
+        onLogin(data);
+
     }
     return(
         <div className="main">
@@ -30,12 +40,13 @@ const MainPage = ()=>{
             <button
                 className="main__button btn btn-success"
                 onClick={onEnter}
+                disabled={isLoading}
             >
-                Enter
+                {isLoading ? 'Connecting...' : 'Enter'}
             </button>
         </div>
     )
 
 }
 
-export default MainPage;
+export default Login;
