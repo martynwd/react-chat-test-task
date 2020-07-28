@@ -12,8 +12,10 @@ export default (state, action) => {
             return {
                 ...state,
                 users: action.payload.users,
+
                 messages: action.payload.messages,
             };
+
 
         case 'SET_USERS':
             return {
@@ -26,6 +28,8 @@ export default (state, action) => {
                 ...state,
                 messages: [...state.messages, action.payload],
             };
+
+        case 'START_STREAM':
 
         default:
             return state;

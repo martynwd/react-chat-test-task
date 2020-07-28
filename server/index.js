@@ -3,23 +3,23 @@ import useSocket from 'socket.io';
 import server from 'http';
 import dotenv from 'dotenv';
 
-//import rooms from "./data/rooms.js";
+import rooms from "./data/rooms.js";
 
-
+//config
 dotenv.config();
-
+//create express server
 const app = express();
 app.use(express.json());
 
-
+//add sockets to our express server
 const Server = server.createServer(app);
 const io = useSocket(Server);
 
-const rooms = new Map();
+const usersIds = {}
 
-
+//get room for getting info while connect in room which already exist
+//cause if we will getting info with socket it would't work
 app.get("/rooms/:id",(req, res)=>{
-    console.log(req.params);
     const { id: roomId } =req.params;
     const object = rooms.has(roomId) ? {
         users: [...rooms.get(roomId).get('users').values()],
@@ -27,11 +27,12 @@ app.get("/rooms/:id",(req, res)=>{
     } : { users: [], messages: []}
     res.json(object);
 })
+//creating room and add to Map
 app.post("/rooms",(req, res)=>{
     const { roomId, userName } = req.body;
     if(!rooms.has(roomId)){
         rooms.set(roomId, new Map([
-            ['users',new Map()],
+            ['users', new Map()],
             ['messages', [] ],
         ]));
     }
@@ -39,13 +40,26 @@ app.post("/rooms",(req, res)=>{
     res.json([...rooms.keys()]);
 })
 io.on('connection',socket=>{
+
+    socket.emit("room:get_current_id", socket.id);
+    //io.sockets.emit("allUsers", usersIds);
+
+
+    socket.on("room:call_user", (data) => {
+        io.to(data.userToCall).emit('room:call_user', {signal: data.signalData, from: data.from});
+    })
+
+    socket.on("room:accept_call", (data) => {
+        io.to(data.to).emit('room:accepted_call', data.signal);
+    })
+    //joining to room, announce to all instead you
     socket.on('room:join',({roomId, userName})=>{
         socket.join(roomId);
-        rooms.get(roomId).get('users').set(socket.id, userName);
+        rooms.get(roomId).get('users').set(socket.id, {userName: userName, id: socket.id});
         const users =  [...rooms.get(roomId).get('users').values()];
         socket.to(roomId).broadcast.emit('room:set_users',users)
     });
-
+    //send message
     socket.on('room:new_message', ({ roomId, userName, text }) => {
         const obj = {
             userName,
@@ -55,6 +69,7 @@ io.on('connection',socket=>{
         socket.to(roomId).broadcast.emit('room:new_message', obj);
     });
 
+    //when disconnect other users instantly see it
     socket.on('disconnect',()=>{
         rooms.forEach((value, roomId) => {
             //if user found and deleted return true

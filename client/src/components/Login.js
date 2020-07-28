@@ -1,9 +1,8 @@
 import React, {useState} from "react";
-import socket from "../socket";
 import axios from 'axios'
 
 
-const Login = ({onLogin} )=>{
+const Login = ({ onLogin } )=>{
     const [roomId,setRoomId] = useState('');
     const [userName,setUsername] = useState('');
     const [isLoading, setLoading] = useState(false);

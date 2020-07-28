@@ -4,22 +4,51 @@
   border: 1px solid rgba(159, 183, 197, 0.2);
   border-radius: 8px;
   overflow: hidden;
+  &__users{
+    border-right: 1px solid rgba(159, 183, 197, 0.1);
+    padding: 20px;
+    width: 200px;
+    background-color: #f6f9fa;
+    &_list{
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      &_element{
+        margin-top: 10px;
+
+        border-radius: 3px;
+        background-color: #fff;
+        padding: 8px 14px;
+        box-shadow: 0 3px 5px rgba(159, 183, 197, 0.1);
+        font-weight: 500;
+
+      }
+      &_button{
+        margin: 40px;
+      }
+    }
+  }
+  &__messages{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    padding: 30px;
+    &_form{
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+    }
+    &_textarea{
+      width: 100%;
+      margin-bottom: 10px;
+
+    }
+  }
 }
 
-.chat-users {
-  border-right: 1px solid rgba(159, 183, 197, 0.1);
-  padding: 20px;
-  width: 200px;
-  background-color: #f6f9fa;
-}
 
-.chat-messages {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex: 1;
-  padding: 30px;
-}
 
 .messages {
   flex: 1;
@@ -27,47 +56,22 @@
   overflow: auto;
 }
 
-.message {
+.chat__message {
   margin-bottom: 20px;
+  &_text{
+    display: inline-flex;
+    border-radius: 10px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: #7160ff;
+    padding: 10px 15px 15px;
+    color: #fff;
+    margin-bottom: 2px;
+
+  }
+  &_title{
+    opacity: 0.5;
+    font-size: 14px;
+
+  }
 }
 
-.message p {
-  display: inline-flex;
-  border-radius: 10px;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  background-color: #7160ff;
-  padding: 10px 15px 15px;
-  color: #fff;
-  margin-bottom: 2px;
-}
-
-.message span {
-  opacity: 0.5;
-  font-size: 14px;
-}
-
-.chat-users ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.chat-users ul li {
-  margin-top: 10px;
-  border-radius: 3px;
-  background-color: #fff;
-  padding: 8px 14px;
-  box-shadow: 0 3px 5px rgba(159, 183, 197, 0.1);
-  font-weight: 500;
-}
-
-.chat-messages form {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.chat-messages form textarea {
-  width: 100%;
-  margin-bottom: 10px;
-}
