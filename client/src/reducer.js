@@ -29,9 +29,6 @@ export default (state, action) => {
                 messages: [...state.messages, action.payload],
             };
 
-        case 'START_STREAM':
 
-        default:
-            return state;
     }
 };

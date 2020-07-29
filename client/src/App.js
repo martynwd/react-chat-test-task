@@ -47,12 +47,7 @@ const  App = ()=> {
             payload: message,
         });
     };
-    const startStream = () =>{
-        dispatch({
-            type: 'START_STREAM',
-            payload: true
-        })
-    }
+
 
     useEffect(()=>{
         //socket.on can get only 1 action not array it cause we use 2 on's
@@ -60,7 +55,7 @@ const  App = ()=> {
         socket.on('room:new_message', addMessage);
     },[]);
 
-    console.log(state)
+
   return (
     <div className="App">
         {

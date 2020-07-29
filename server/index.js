@@ -41,17 +41,7 @@ app.post("/rooms",(req, res)=>{
 })
 io.on('connection',socket=>{
 
-    socket.emit("room:get_current_id", socket.id);
-    //io.sockets.emit("allUsers", usersIds);
 
-
-    socket.on("room:call_user", (data) => {
-        io.to(data.userToCall).emit('room:call_user', {signal: data.signalData, from: data.from});
-    })
-
-    socket.on("room:accept_call", (data) => {
-        io.to(data.to).emit('room:accepted_call', data.signal);
-    })
     //joining to room, announce to all instead you
     socket.on('room:join',({roomId, userName})=>{
         socket.join(roomId);

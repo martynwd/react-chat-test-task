@@ -1,22 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
 import socket from '../socket';
-import Peer from 'simple-peer'
-
-
 
 const Chat = ({ users, messages, userName, roomId, onAddMessage })=> {
     const [messageValue, setMessageValue] = useState('');
-    const [yourID, setYourID] = useState("");
-    const [stream, setStream] = useState();
-    const [receivingCall, setReceivingCall] = useState(false);
-    const [caller, setCaller] = useState("");
-    const [callerSignal, setCallerSignal] = useState();
-    const [callAccepted, setCallAccepted] = useState(false);
-
     const messagesRef = useRef(null);
-    const userVideo = useRef();
-    const partnerVideo = useRef();
-
 
     const onSendMessage = () => {
         socket.emit('room:new_message', {
@@ -28,98 +15,6 @@ const Chat = ({ users, messages, userName, roomId, onAddMessage })=> {
         setMessageValue('');
     };
 
-    useEffect(() => {
-        messagesRef.current.scrollTo(0, 99999);
-    }, [messages]);
-
-    useEffect(() => {
-
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
-            setStream(stream);
-            if (userVideo.current) {
-                userVideo.current.srcObject = stream;
-            }
-        })
-
-        socket.on("room:get_current_id", (id) => {
-            setYourID(id);
-        })
-
-
-        socket.on("room:call_user", (data) => {
-            setReceivingCall(true);
-            setCaller(users[yourID]);
-
-            setCallerSignal(data.signal);
-        })
-    }, []);
-
-    const callPeer = (id)=>{
-        const peer = new Peer({
-            initiator: true,
-            trickle: false,
-            stream: stream,
-        });
-
-        peer.on("signal", data => {
-            socket.emit("room:call_user", { userToCall: id, signalData: data, from: yourID })
-        })
-
-        peer.on("stream", stream => {
-            if (partnerVideo.current) {
-                partnerVideo.current.srcObject = stream;
-            }
-        });
-
-        socket.on("room:accepted_call", signal => {
-            setCallAccepted(true);
-            peer.signal(signal);
-        })
-
-    }
-
-    const acceptCall =()=> {
-        setCallAccepted(true);
-        const peer = new Peer({
-            initiator: false,
-            trickle: false,
-            stream: stream,
-        });
-        peer.on("signal", data => {
-            socket.emit("room:accept_call", { signal: data, to: caller })
-        })
-
-        peer.on("stream", stream => {
-            partnerVideo.current.srcObject = stream;
-        });
-
-        peer.signal(callerSignal);
-
-    }
-
-    let UserVideo;
-    if (stream) {
-        UserVideo = (
-            <video playsInline muted ref={userVideo} autoPlay />
-        );
-    }
-
-    let PartnerVideo;
-    if (callAccepted) {
-        PartnerVideo = (
-            <video playsInline ref={partnerVideo} autoPlay />
-        );
-    }
-
-    let incomingCall;
-    if (receivingCall) {
-        incomingCall = (
-            <div>
-                <h1>You have a call</h1>
-                <button className="btn btn-primary" onClick={acceptCall}>Accept</button>
-            </div>
-        )
-    }
 
     return (
         <div className="chat">
@@ -132,10 +27,6 @@ const Chat = ({ users, messages, userName, roomId, onAddMessage })=> {
                         <li key={user.userName + index} className="chat__users_list_element">
                             {
                                 user.userName
-                            }
-                            {
-                               <button className="chat__users_button btn btn-primary" onClick={() => callPeer(user.id)}>Call {user.userName}</button>
-
                             }
                         </li>
                     ))}
@@ -155,7 +46,7 @@ const Chat = ({ users, messages, userName, roomId, onAddMessage })=> {
                         </div>
                     ))}
                 </div>
-                {userVideo.current}
+
          <form className="chat__messages_form">
           <textarea
               value={messageValue}
@@ -171,8 +62,7 @@ const Chat = ({ users, messages, userName, roomId, onAddMessage })=> {
 
                 </form>
 
-                {PartnerVideo}
-                {incomingCall}
+
             </div>
 
         </div>
