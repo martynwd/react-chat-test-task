@@ -15,7 +15,7 @@ app.use(express.json());
 const Server = server.createServer(app);
 const io = useSocket(Server);
 
-const usersIds = {}
+
 
 //get room for getting info while connect in room which already exist
 //cause if we will getting info with socket it would't work

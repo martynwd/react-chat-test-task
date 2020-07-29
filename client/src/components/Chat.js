@@ -54,7 +54,7 @@ const Chat = ({ users, messages, userName, roomId, onAddMessage })=> {
         })
     }, []);
 
-    function callPeer(id) {
+    const callPeer = (id)=>{
         const peer = new Peer({
             initiator: true,
             trickle: false,
@@ -78,7 +78,7 @@ const Chat = ({ users, messages, userName, roomId, onAddMessage })=> {
 
     }
 
-    function acceptCall() {
+    const acceptCall =()=> {
         setCallAccepted(true);
         const peer = new Peer({
             initiator: false,
