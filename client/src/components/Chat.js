@@ -155,7 +155,7 @@ const Chat = ({ users, messages, userName, roomId, onAddMessage })=> {
                         </div>
                     ))}
                 </div>
-                {userVideo.current}
+                
          <form className="chat__messages_form">
           <textarea
               value={messageValue}
